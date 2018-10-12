@@ -2,7 +2,9 @@ package com.probuing.fastec;
 
 import android.app.Application;
 
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.probuing.latte_core.app.Latte;
+
 
 /**
  * @author wxblack-mac
@@ -16,6 +18,9 @@ public class AppApplication extends Application {
         super.onCreate();
         //框架初始化
         Latte.init(this)
-                .withApiHost("http://mock.fulingjie.com/mock/api/");
+                .withApiHost("http://mock.fulingjie.com/mock/api/")
+                .withIcon(new FontAwesomeModule())
+                //加入默认字体图标
+                .configure();
     }
 }

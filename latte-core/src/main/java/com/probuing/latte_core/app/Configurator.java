@@ -1,5 +1,9 @@
 package com.probuing.latte_core.app;
 
+import com.joanzapata.iconify.IconFontDescriptor;
+import com.joanzapata.iconify.Iconify;
+
+import java.util.ArrayList;
 import java.util.WeakHashMap;
 
 /**
@@ -10,7 +14,8 @@ import java.util.WeakHashMap;
  */
 public final class Configurator {
     private static final WeakHashMap<String, Object> LATTE_CONFIGS = new WeakHashMap<String, Object>();
-
+    //定义存储字体图标空间
+    private static final ArrayList<IconFontDescriptor> ICONS = new ArrayList<IconFontDescriptor>();
 
     public Configurator() {
         //重置初始化默认状态
@@ -42,8 +47,33 @@ public final class Configurator {
      * 配置方法
      */
     public final void configure() {
+        initIcons();
+
         //更改配置准备状态
         LATTE_CONFIGS.put(ConfiguraType.CONFIG_READY.name(), true);
+    }
+
+    /**
+     * 图标初始化
+     */
+    private void initIcons() {
+        if (ICONS.size() > 0) {
+            Iconify.IconifyInitializer initializer = Iconify.with(ICONS.get(0));
+            for (int i = 1; i < ICONS.size(); i++) {
+                initializer.with(ICONS.get(i));
+            }
+        }
+    }
+
+    /**
+     * 添加字体图标
+     *
+     * @param descriptor 字体图标
+     * @return configurator
+     */
+    public final Configurator withIcon(IconFontDescriptor descriptor) {
+        ICONS.add(descriptor);
+        return this;
     }
 
     public final Configurator withApiHost(String host) {
