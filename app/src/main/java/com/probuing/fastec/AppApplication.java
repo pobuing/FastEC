@@ -3,6 +3,7 @@ package com.probuing.fastec;
 import android.app.Application;
 
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
+import com.probuing.latte.ec.icon.FontEcModule;
 import com.probuing.latte_core.app.Latte;
 
 
@@ -19,8 +20,10 @@ public class AppApplication extends Application {
         //框架初始化
         Latte.init(this)
                 .withApiHost("http://mock.fulingjie.com/mock/api/")
-                .withIcon(new FontAwesomeModule())
                 //加入默认字体图标
+                .withIcon(new FontAwesomeModule())
+                //加入自定义字体图标
+                .withIcon(new FontEcModule())
                 .configure();
     }
 }
