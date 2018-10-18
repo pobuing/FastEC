@@ -33,6 +33,10 @@ public class RestClientBuilder {
     private Context mContext = null;
     private LoaderStyle mloaderStyle = null;
 
+    private String mDownloadDir = null;
+    private String mExtension = null;
+    private String mDownName = null;
+
 
     private static final class ParamsHolder {
         public static final WeakHashMap<String, Object> PARAMS = new WeakHashMap<>();
@@ -70,6 +74,21 @@ public class RestClientBuilder {
 
     public final RestClientBuilder file(File file) {
         mFile = file;
+        return this;
+    }
+
+    public final RestClientBuilder dir(String downDir) {
+        this.mDownloadDir = downDir;
+        return this;
+    }
+
+    public final RestClientBuilder extension(String extension) {
+        this.mExtension = extension;
+        return this;
+    }
+
+    public final RestClientBuilder downName(String downName) {
+        this.mDownName = downName;
         return this;
     }
 
@@ -114,6 +133,9 @@ public class RestClientBuilder {
     public final RestClient build() {
         return new RestClient(mUrl,
                 mParams,
+                mDownloadDir,
+                mExtension,
+                mDownName,
                 mIRequest,
                 mISuccess,
                 mIFailure,

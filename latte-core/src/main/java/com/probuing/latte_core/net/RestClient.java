@@ -7,6 +7,7 @@ import com.probuing.latte_core.net.callback.IFailure;
 import com.probuing.latte_core.net.callback.IRequest;
 import com.probuing.latte_core.net.callback.ISuccess;
 import com.probuing.latte_core.net.callback.RequestCallbacks;
+import com.probuing.latte_core.net.download.DownLoadHandler;
 import com.probuing.latte_core.ui.LatteLoader;
 import com.probuing.latte_core.ui.LoaderStyle;
 
@@ -31,6 +32,9 @@ public class RestClient {
     private final String URL;
     private static final WeakHashMap<String, Object> PARAMS = RestCreator.getParams();
     private final IRequest REQUEST;
+    private final String DOWNLOAD_DIR;
+    private final String EXTENSION;
+    private final String NAME;
     private final ISuccess SUCCESS;
     private final IFailure FAILURE;
     private final IError ERROR;
@@ -41,6 +45,9 @@ public class RestClient {
 
     public RestClient(String URL,
                       Map<String, Object> params,
+                      String downloadDir,
+                      String extension,
+                      String name,
                       IRequest request,
                       ISuccess success,
                       IFailure failure,
@@ -52,6 +59,10 @@ public class RestClient {
 
         this.URL = URL;
         PARAMS.putAll(params);
+        this.DOWNLOAD_DIR = downloadDir;
+        this.EXTENSION = extension;
+        this.NAME = name;
+
         this.REQUEST = request;
         this.SUCCESS = success;
         this.FAILURE = failure;
@@ -96,9 +107,9 @@ public class RestClient {
                 call = service.delete(URL, PARAMS);
                 break;
             case UPLOAD:
-                final RequestBody requestBody = RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()),FILE );
-                final MultipartBody.Part body = MultipartBody.Part.createFormData("file",FILE.getName(),requestBody);
-                call = service.upload(URL,body);
+                final RequestBody requestBody = RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()), FILE);
+                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", FILE.getName(), requestBody);
+                call = service.upload(URL, body);
                 break;
             default:
                 break;
@@ -144,5 +155,9 @@ public class RestClient {
 
     public final void delete() {
         request(HttpMethod.DELETE);
+    }
+
+    public final void downLoad() {
+        new DownLoadHandler(URL, REQUEST, DOWNLOAD_DIR, EXTENSION, NAME, SUCCESS, FAILURE, ERROR).handleDownload();
     }
 }
