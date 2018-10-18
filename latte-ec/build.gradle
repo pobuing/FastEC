@@ -25,6 +25,8 @@ android {
 }
 
 dependencies {
+    testImplementation 'junit:junit:4.12'
     api fileTree(include: ['*.jar'], dir: 'libs')
     api project(':latte-core')
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
