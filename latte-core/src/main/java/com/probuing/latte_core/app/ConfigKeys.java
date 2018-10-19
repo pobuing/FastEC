@@ -7,10 +7,10 @@ package com.probuing.latte_core.app;
  * GOOD LUCK
  */
 
-public enum ConfiguraType {
+public enum ConfigKeys {
 
     API_HOST,
     APPLICATION_CONTEXT,
     CONFIG_READY,
-    ICON
+    INTERCEPTOR, ICON
 }

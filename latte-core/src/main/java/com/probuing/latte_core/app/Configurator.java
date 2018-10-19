@@ -6,6 +6,8 @@ import com.joanzapata.iconify.Iconify;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.Interceptor;
+
 /**
  * @author wxblack-mac
  * @DATE 2018/10/12 16:57
@@ -13,13 +15,15 @@ import java.util.HashMap;
  * GOOD LUCK
  */
 public final class Configurator {
-    private static final HashMap<String, Object> LATTE_CONFIGS = new HashMap<String, Object>();
+    private static final HashMap<Object, Object> LATTE_CONFIGS = new HashMap<>();
     //定义存储字体图标空间
     private static final ArrayList<IconFontDescriptor> ICONS = new ArrayList<IconFontDescriptor>();
 
+    private static final ArrayList<Interceptor> INTERCEPTORS = new ArrayList<>();
+
     public Configurator() {
         //重置初始化默认状态
-        LATTE_CONFIGS.put(ConfiguraType.CONFIG_READY.name(), false);
+        LATTE_CONFIGS.put(ConfigKeys.CONFIG_READY.name(), false);
     }
 
     /**
@@ -31,7 +35,7 @@ public final class Configurator {
         return Holder.INSTANCE;
     }
 
-    public HashMap<String, Object> getLatteConfigs() {
+    public HashMap<Object, Object> getLatteConfigs() {
         return LATTE_CONFIGS;
     }
 
@@ -50,7 +54,7 @@ public final class Configurator {
         initIcons();
 
         //更改配置准备状态
-        LATTE_CONFIGS.put(ConfiguraType.CONFIG_READY.name(), true);
+        LATTE_CONFIGS.put(ConfigKeys.CONFIG_READY.name(), true);
     }
 
     /**
@@ -76,8 +80,20 @@ public final class Configurator {
         return this;
     }
 
+    public final Configurator withInterceptor(Interceptor interceptor) {
+        INTERCEPTORS.add(interceptor);
+        LATTE_CONFIGS.put(ConfigKeys.INTERCEPTOR, INTERCEPTORS);
+        return this;
+    }
+
+    public final Configurator withInterceptors(ArrayList<Interceptor> interceptors) {
+        INTERCEPTORS.addAll(interceptors);
+        LATTE_CONFIGS.put(ConfigKeys.INTERCEPTOR, INTERCEPTORS);
+        return this;
+    }
+
     public final Configurator withApiHost(String host) {
-        LATTE_CONFIGS.put(ConfiguraType.API_HOST.name(), host);
+        LATTE_CONFIGS.put(ConfigKeys.API_HOST.name(), host);
         return this;
     }
 
@@ -85,7 +101,7 @@ public final class Configurator {
      * 配置检测
      */
     private void checkConfiguration() {
-        final boolean isReady = (boolean) LATTE_CONFIGS.get(ConfiguraType.CONFIG_READY.name());
+        final boolean isReady = (boolean) LATTE_CONFIGS.get(ConfigKeys.CONFIG_READY.name());
         if (!isReady) {
             //未准备就绪
             throw new RuntimeException("configuration is not ready,call configure");
@@ -101,8 +117,12 @@ public final class Configurator {
      * @return 配置的值
      */
     @SuppressWarnings("unchecked")
-    final <T> T getConfiguration(Enum<ConfiguraType> key) {
+    final <T> T getConfiguration(Object key) {
         checkConfiguration();
-        return (T) LATTE_CONFIGS.get(key.name());
+        Object value = LATTE_CONFIGS.get(key);
+        if (value == null) {
+            throw new NullPointerException(key.toString() + "IS NULL");
+        }
+        return (T) LATTE_CONFIGS.get(key);
     }
 }
